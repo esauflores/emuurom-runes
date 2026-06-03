@@ -1,0 +1,80 @@
+{
+  "fwd_shifts": [
+    ["ua","oo"], ["iä","ää"], ["ea","ee"], ["eä","iä"], ["öä","öö"],
+    ["yö","yy"], ["au","ao"], ["ou","uo"], ["ie","ii"], ["uo","ua"]
+  ],
+  "fwd_trim": [
+    ["aa$","oo"], ["ää$","iä"]
+  ],
+  "direct_reversals": [
+    {"pattern": "oo", "replacement": "ua", "note": "kaoppa→kauppa"},
+    {"pattern": "uo", "replacement": "aa", "note": "suaha→saada"},
+    {"pattern": "ee", "replacement": "ea", "note": "ruskee→ruskea"},
+    {"pattern": "ää", "replacement": "iä", "note": "pääsä→päästä"},
+    {"pattern": "öö", "replacement": "öä", "note": "kyntöö→kyntöä"},
+    {"pattern": "yy", "replacement": "yö", "note": "tyy→työ"},
+    {"pattern": "ao", "replacement": "au", "note": "kaoppa→kauppa"}
+  ],
+  "single_reversals": [
+    {"pattern": "tj", "replacement": "ti", "note": "kotj→koti"},
+    {"pattern": "sj", "replacement": "si", "note": "vesj→vesi"},
+    {"pattern": "lj", "replacement": "li", "note": "palatalization"},
+    {"pattern": "nj", "replacement": "ni", "note": "palatalization"},
+    {"pattern": "rj", "replacement": "ri", "note": "palatalization"},
+    {"pattern": "tt", "replacement": "ts", "note": "mettä→metsä"},
+    {"pattern": "ht", "replacement": "hd", "note": "lahtoo→lahdo"},
+    {"pattern": "ss", "replacement": "st", "note": "vowel gradation"}
+  ],
+  "final_trim": [
+    {"pattern": "oo$", "replacement": "aa", "note": "kahavoo→kahavia"},
+    {"pattern": "uu$", "replacement": "ua"},
+    {"pattern": "yy$", "replacement": "yä"},
+    {"pattern": "ee$", "replacement": "ea"},
+    {"pattern": "öö$", "replacement": "öä"},
+    {"pattern": "aa$", "replacement": "ua"},
+    {"pattern": "oo$", "replacement": "au"},
+    {"pattern": "i$", "replacement": "ia"},
+    {"pattern": "e$", "replacement": "ea"}
+  ],
+  "word_map": {
+    "mie": "minä",
+    "sie": "sinä",
+    "myö": "me",
+    "työ": "te",
+    "hyö": "he",
+    "pittää": "pitää",
+    "kaekkee": "kaikkea",
+    "kaekki": "kaikki",
+    "suaha": "saada",
+    "veäntyy": "vääntyy",
+    "myötä": "kanssa",
+    "jotta": "että",
+    "suattaa": "saattaa",
+    "tiällä": "täällä",
+    "siältä": "sieltä",
+    "miusta": "minusta",
+    "siusta": "sinusta",
+    "piästä": "päästä",
+    "piä": "pää",
+    "miäs": "mies",
+    "viärä": "väärin",
+    "peä": "pää",
+    "keäntyä": "kääntyä",
+    "lentee": "lentää",
+    "männä": "mennä",
+    "panna": "panna",
+    "tulla": "tulla",
+    "olla": "olla",
+    "eikä": "eikä",
+    "suapi": "saa",
+    "voep": "voi",
+    "työntee": "työntää",
+    "hyvvee": "hyvää",
+    "päevvee": "päivää",
+    "aekoo": "aikaa",
+    "huomeneks": "huomiseksi",
+    "jokssii": "joksikin",
+    "roestikkaat": "roistot",
+    "ukko": "vanha mies"
+  }
+}

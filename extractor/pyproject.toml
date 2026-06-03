@@ -1,0 +1,11 @@
+[project]
+name = "savo-extractor"
+version = "0.1.0"
+description = "Savo murre → standard Finnish fuzzy word matcher"
+requires-python = ">=3.12"
+dependencies = [
+    "typer>=0.26.7",
+]
+
+[tool.ruff.lint]
+ignore = ["F541", "E741"]

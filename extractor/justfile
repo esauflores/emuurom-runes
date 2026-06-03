@@ -1,0 +1,11 @@
+# Build the Finnish <-> Savo-ish word bank
+build:
+  @uv run python extractor.py
+
+# Match Savo-ish → Finnish
+fi word *args:
+  @uv run python matcher.py fi "{{word}}" {{args}}
+
+# Match → closest Savo-ish word
+savo word *args:
+  @uv run python matcher.py savo "{{word}}" {{args}}
