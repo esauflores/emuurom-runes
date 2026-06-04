@@ -1,4 +1,7 @@
-# emuurom-runes
+<h1 style="display: flex;align-items: center">
+  <img src="screenshots/stone.png" height="32" style="margin-right: 10px">
+  emuurom-runes
+</h1>
 
 > **⚠️ SPOILER WARNING** — [EMUUROM](https://store.steampowered.com/app/1634360/EMUUROM/) is game about exploration and discovery. This repository reveals part of game's rune puzzle. Read on at your own risk.
 
@@ -30,6 +33,7 @@ Decode symbols, compose rune-words, find translations. Companion for the languag
 
 ## Quick start
 
+```bash
 # Web UI (edit glyphs, compose words)
 cd webapp
 pnpm install
@@ -40,6 +44,7 @@ cd extractor
 uv sync
 just build
 just fi "kirjur'"
+```
 
 ## How it works
 
