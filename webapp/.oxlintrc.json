@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": ["node_modules"],
+  "categories": {
+    "correctness": "deny",
+    "suspicious": "warn",
+    "style": "off",
+    "pedantic": "off"
+  },
+  "rules": {
+    "eslint/no-unused-vars": "error",
+    "eslint/prefer-const": "error",
+    "eslint/no-var": "error",
+    "typescript/no-explicit-any": "error",
+    "typescript/ban-ts-comment": "warn",
+    "typescript/await-thenable": "error",
+    "react/jsx-key": "error",
+    "react/no-direct-mutation-state": "error",
+    "react/react-in-jsx-scope": "off",
+    "eslint/no-duplicate-imports": "off",
+    "unicorn/prefer-add-event-listener": "off"
+  }
+}
