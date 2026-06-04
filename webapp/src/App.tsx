@@ -110,6 +110,15 @@ export default function App() {
             <input type="file" accept=".sqlite3" onChange={handleImport} hidden />
           </label>
         </div>
+        <a
+          href="https://github.com/esauflores/emuurom-runes"
+          target="_blank"
+          rel="noreferrer"
+          className="gh-link"
+          title="Source on GitHub"
+        >
+          <img src="/github.svg" width="20" height="20" alt="GitHub" />
+        </a>
       </header>
 
       {currentPage === 'editor' && (
