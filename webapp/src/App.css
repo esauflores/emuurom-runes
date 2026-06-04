@@ -158,6 +158,17 @@ button:disabled {
   width: 100%;
 }
 
+.error-shake {
+  border-color: #d44 !important;
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
 .muted {
   color: #6a6a7a;
   font-size: 0.8rem;

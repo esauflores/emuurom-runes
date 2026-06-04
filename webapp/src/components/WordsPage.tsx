@@ -181,24 +181,6 @@ export default function WordsPage() {
         </div>
       </section>
 
-      <section className="gallery-panel">
-        <h3>Output</h3>
-        <div
-          style={{
-            background: '#1a1a2e',
-            border: '1px solid #333',
-            borderRadius: 6,
-            padding: '8px 12px',
-            minHeight: 28,
-            fontFamily: 'monospace',
-            fontSize: '1.1rem',
-            color: '#e0d6c0',
-          }}
-        >
-          {composedWord || <span style={{ color: '#555' }}>—</span>}
-        </div>
-      </section>
-
       {composedWord && (
         <section className="gallery-panel">
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>

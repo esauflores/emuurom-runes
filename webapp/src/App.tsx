@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import PixelEditor from './components/PixelEditor';
 import PixelView from './components/PixelView';
@@ -32,6 +32,8 @@ export default function App() {
   const setGlyphs = useStore((s) => s.setGlyphs);
   const setLoading = useStore((s) => s.setLoading);
 
+  const [letterError, setLetterError] = useState(false);
+
   const refresh = async () => {
     setLoading(true);
     const rows = await listGlyphs();
@@ -48,7 +50,11 @@ export default function App() {
   const filtered = search.trim() ? fuse.search(search).map((r) => r.item) : glyphs;
 
   const handleSave = async () => {
-    if (!letter.trim()) return;
+    if (!letter.trim()) {
+      setLetterError(true);
+      return;
+    }
+    setLetterError(false);
     if (editId !== null) await updateGlyph(editId, letter, letter, pixels, notes);
     else await saveGlyph(letter, letter, pixels, notes);
     setLetter('');
@@ -97,7 +103,7 @@ export default function App() {
         </h1>
         <nav>
           <button className={currentPage === 'editor' ? 'active' : ''} onClick={() => setCurrentPage('editor')}>
-            Glyphs
+            Runes
           </button>
           <button className={currentPage === 'words' ? 'active' : ''} onClick={() => setCurrentPage('words')}>
             Words
@@ -126,10 +132,10 @@ export default function App() {
           <section className="editor-panel">
             <div className="editor-header" style={{ maxWidth: 448 }}>
               <input
-                placeholder="Finnish letter(s)"
+                placeholder="Character(s)"
                 value={letter}
-                onChange={(e) => setLetter(e.target.value)}
-                className="input-sm"
+                onChange={(e) => { setLetter(e.target.value); setLetterError(false); }}
+                className={`input-sm${letterError ? ' error-shake' : ''}`}
                 maxLength={8}
               />
               <div className="mode-toggle">
@@ -186,7 +192,7 @@ export default function App() {
           </section>
           <section className="gallery-panel">
             <input
-              placeholder="Search glyphs..."
+              placeholder="Search runes..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="input-sm full"
