@@ -7,7 +7,7 @@
 
 Decode symbols, compose rune-words, find translations. Companion for the language puzzle.
 
-**[emuurom-runes.vercel.app](https://emuurom-runes.vercel.app/)**
+🌐 **Live:** [emuurom-runes.vercel.app](https://emuurom-runes.vercel.app/)
 
 ## Find Runes
 
