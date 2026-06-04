@@ -17,6 +17,7 @@ interface AppState {
   glyphs: GlyphRow[];
   loading: boolean;
   wordBuilder: number[];
+  flipped: string[];
 
   setPixels: (p: string) => void;
   setLetter: (l: string) => void;
@@ -31,6 +32,9 @@ interface AppState {
   addToWord: (id: number) => void;
   removeFromWord: (index: number) => void;
   clearWord: () => void;
+  addFlip: (key: string) => void;
+  removeFlip: (key: string) => void;
+  setFlipped: (f: string[]) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -47,6 +51,7 @@ export const useStore = create<AppState>()(
       glyphs: [],
       loading: true,
       wordBuilder: [],
+      flipped: [],
 
       setPixels: (pixels) => set({ pixels }),
       setLetter: (letter) => set({ letter }),
@@ -60,7 +65,10 @@ export const useStore = create<AppState>()(
       setLoading: (loading) => set({ loading }),
       addToWord: (id) => set((s) => ({ wordBuilder: [...s.wordBuilder, id] })),
       removeFromWord: (index) => set((s) => ({ wordBuilder: s.wordBuilder.filter((_, i) => i !== index) })),
-      clearWord: () => set({ wordBuilder: [] }),
+      clearWord: () => set({ wordBuilder: [], flipped: [] }),
+      addFlip: (key) => set((s) => ({ flipped: [...s.flipped, key] })),
+      removeFlip: (key) => set((s) => ({ flipped: s.flipped.filter((k) => k !== key) })),
+      setFlipped: (flipped) => set({ flipped }),
     }),
     {
       name: 'emuurom-runes-ui',
@@ -74,6 +82,7 @@ export const useStore = create<AppState>()(
         page: state.page,
         currentPage: state.currentPage,
         wordBuilder: state.wordBuilder,
+        flipped: state.flipped,
       }),
     },
   ),

@@ -9,6 +9,9 @@ export default function WordsPage() {
   const glyphs = useStore((s) => s.glyphs);
   const addToWord = useStore((s) => s.addToWord);
   const wordBuilder = useStore((s) => s.wordBuilder);
+  const flippedArr = useStore((s) => s.flipped);
+  const addFlip = useStore((s) => s.addFlip);
+  const removeFlip = useStore((s) => s.removeFlip);
 
   const glyphMap = useMemo(() => {
     const m = new Map<number, string>();
@@ -37,16 +40,16 @@ export default function WordsPage() {
   const letterToIdRef = useRef(letterToId);
   letterToIdRef.current = letterToId;
 
-  const [flipped, setFlipped] = useState<Set<string>>(new Set());
+  // Derive Set from persisted array for O(1) lookups in WordBuilderGrid
+  const flipped = useMemo(() => new Set(flippedArr), [flippedArr]);
+
   const [searchWord, setSearchWord] = useState('');
-  const searchWordRef = useRef(searchWord);
-  searchWordRef.current = searchWord;
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
 
-      if (e.key === 'Escape') return; // no-op
+      if (e.key === 'Escape') return;
 
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -69,11 +72,8 @@ export default function WordsPage() {
         const wb = useStore.getState().wordBuilder;
         if (wb.length) {
           const idx = wb.length - 1;
-          setFlipped((prev) => {
-            const next = new Set(prev);
-            next.delete(`${wb[idx]}-${idx}`);
-            return next;
-          });
+          const key = `${wb[idx]}-${idx}`;
+          useStore.getState().removeFlip(key);
           useStore.getState().removeFromWord(idx);
         }
         return;
@@ -96,18 +96,14 @@ export default function WordsPage() {
           useStore.getState().addToWord(id);
           if (wasStar) {
             const newIdx = useStore.getState().wordBuilder.length - 1;
-            setFlipped((prev) => {
-              const next = new Set(prev);
-              next.add(`${id}-${newIdx}`);
-              return next;
-            });
+            useStore.getState().addFlip(`${id}-${newIdx}`);
           }
         }
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, []);
+  }, [addFlip, removeFlip]);
 
   // Input: shows everything including markers
   const typedInput = wordBuilder
@@ -128,34 +124,26 @@ export default function WordsPage() {
   const handleAddToWord = useCallback(
     (id: number) => {
       if (id === -2) {
-        // * glyph
         addToWord(-2);
         return;
       }
       if (id === -1) {
-        // Space
         addToWord(-1);
         return;
       }
       if (id === -3) {
-        // ? wildcard
         addToWord(-3);
         return;
       }
-      // Real glyph
       const wb = useStore.getState().wordBuilder;
       const wasStar = wb.length > 0 && wb[wb.length - 1] === -2;
       addToWord(id);
       if (wasStar) {
         const newIdx = useStore.getState().wordBuilder.length - 1;
-        setFlipped((prev) => {
-          const next = new Set(prev);
-          next.add(`${id}-${newIdx}`);
-          return next;
-        });
+        useStore.getState().addFlip(`${id}-${newIdx}`);
       }
     },
-    [addToWord],
+    [addToWord, addFlip],
   );
 
   return (
