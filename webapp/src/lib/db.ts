@@ -130,6 +130,21 @@ export async function importDb(file: File): Promise<void> {
   persist();
 }
 
+export async function importFromUrl(url: string): Promise<void> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+  const json = await res.json();
+  if (json.sqlite) {
+    const sqliteBuf = Uint8Array.from(atob(json.sqlite), (c) => c.charCodeAt(0));
+    const SQL = await initSqlJs({ locateFile: () => '/sql-wasm.wasm' });
+    db = new SQL.Database(sqliteBuf);
+    persist();
+  }
+  if (Array.isArray(json.savedWords)) {
+    storeSavedWords?.(json.savedWords as SavedWord[]);
+  }
+}
+
 let storeSavedWords: ((words: unknown[]) => void) | null = null;
 export function setSavedWordsHandler(fn: (words: unknown[]) => void) {
   storeSavedWords = fn;

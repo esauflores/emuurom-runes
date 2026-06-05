@@ -11,6 +11,7 @@ import {
   updateGlyph,
   exportEverything,
   importDb,
+  importFromUrl,
   setSavedWordsHandler,
 } from './lib/db';
 import { useStore } from './lib/store';
@@ -43,6 +44,19 @@ export default function App() {
   const setSavedWords = useStore((s) => s.setSavedWords) as (w: unknown[]) => void;
 
   const [letterError, setLetterError] = useState(false);
+  const [importingFindings, setImportingFindings] = useState(false);
+
+  const handleImportFindings = async () => {
+    setImportingFindings(true);
+    try {
+      await importFromUrl('/emuurom-runes.json');
+      await refresh();
+    } catch {
+      // silently fail — user can still import manually
+    } finally {
+      setImportingFindings(false);
+    }
+  };
 
   const refresh = async () => {
     setLoading(true);
@@ -238,7 +252,14 @@ export default function App() {
                 </div>
               ))}
             </div>
-            {filtered.length === 0 && !loading && <p className="muted">No glyphs yet.</p>}
+            {filtered.length === 0 && !loading && (
+              <div className="muted" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <p style={{ margin: 0 }}>No runes yet. Or</p>
+                <button onClick={handleImportFindings} disabled={importingFindings} style={{ fontSize: '0.8rem', padding: '4px 12px' }}>
+                  {importingFindings ? 'Importing…' : 'Load esauflores findings'}
+                </button>
+              </div>
+            )}
           </section>
         </main>
       )}
