@@ -87,7 +87,7 @@ export async function listGlyphs(): Promise<GlyphRow[]> {
   }));
 }
 
-export function exportDb(): Blob {
+function exportDb(): Blob {
   if (!db) return new Blob();
   const data = db.export();
   return new Blob([data.buffer as ArrayBuffer], { type: 'application/x-sqlite3' });
