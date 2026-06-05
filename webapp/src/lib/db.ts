@@ -1,5 +1,7 @@
 import initSqlJs, { type Database } from 'sql.js';
 
+import type { SavedWord } from './store';
+
 const DB_KEY = 'emuurom-runes-db';
 
 let db: Database | null = null;
@@ -91,9 +93,44 @@ export function exportDb(): Blob {
   return new Blob([data.buffer as ArrayBuffer], { type: 'application/x-sqlite3' });
 }
 
+export function exportEverything(savedWords: unknown): Promise<Blob> {
+  const sqliteData = exportDb();
+  return new Promise<Blob>((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const b64 = (reader.result as string).split(',')[1];
+      const json = JSON.stringify({ sqlite: b64, savedWords });
+      resolve(new Blob([json], { type: 'application/json' }));
+    };
+    reader.readAsDataURL(sqliteData);
+  });
+}
+
 export async function importDb(file: File): Promise<void> {
+  // New bundled format (.emuurom.json)
+  if (file.type === 'application/json' || file.name.endsWith('.json')) {
+    const text = await file.text();
+    const json = JSON.parse(text);
+    if (json.sqlite) {
+      const sqliteBuf = Uint8Array.from(atob(json.sqlite), (c) => c.charCodeAt(0));
+      const SQL = await initSqlJs({ locateFile: () => '/sql-wasm.wasm' });
+      db = new SQL.Database(sqliteBuf);
+      persist();
+    }
+    // Restore saved words
+    if (Array.isArray(json.savedWords)) {
+      storeSavedWords?.(json.savedWords as SavedWord[]);
+    }
+    return;
+  }
+  // Legacy .sqlite3 format
   const buf = await file.arrayBuffer();
   const SQL = await initSqlJs({ locateFile: () => '/sql-wasm.wasm' });
   db = new SQL.Database(new Uint8Array(buf));
   persist();
+}
+
+let storeSavedWords: ((words: unknown[]) => void) | null = null;
+export function setSavedWordsHandler(fn: (words: unknown[]) => void) {
+  storeSavedWords = fn;
 }

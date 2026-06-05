@@ -24,6 +24,16 @@ const GlyphPicker = memo(function GlyphPicker({ glyphs, onAddToWord }: Props) {
           onClick={() => onAddToWord(-1)}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
+          <div style={{ color: '#d4a853', fontSize: '1.2rem', fontWeight: 700 }}>-</div>
+          <div className="card-info">
+            <strong>Dash</strong>
+          </div>
+        </div>
+        <div
+          className="gallery-card space-card"
+          onClick={() => onAddToWord(-4)}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
           <div style={{ color: '#d4a853', fontSize: '1.2rem', fontWeight: 700 }}>␣</div>
           <div className="card-info">
             <strong>Space</strong>

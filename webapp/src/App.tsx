@@ -1,10 +1,18 @@
 import Fuse from 'fuse.js';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import PixelEditor from './components/PixelEditor';
 import PixelView from './components/PixelView';
 import WordsPage from './components/WordsPage';
-import { listGlyphs, saveGlyph, deleteGlyph, updateGlyph, exportDb, importDb } from './lib/db';
+import {
+  listGlyphs,
+  saveGlyph,
+  deleteGlyph,
+  updateGlyph,
+  exportEverything,
+  importDb,
+  setSavedWordsHandler,
+} from './lib/db';
 import { useStore } from './lib/store';
 
 import './App.css';
@@ -31,6 +39,8 @@ export default function App() {
   const setCurrentPage = useStore((s) => s.setCurrentPage);
   const setGlyphs = useStore((s) => s.setGlyphs);
   const setLoading = useStore((s) => s.setLoading);
+  const savedWords = useStore((s) => s.savedWords);
+  const setSavedWords = useStore((s) => s.setSavedWords) as (w: unknown[]) => void;
 
   const [letterError, setLetterError] = useState(false);
 
@@ -47,7 +57,15 @@ export default function App() {
 
   const fuse = useMemo(() => new Fuse(glyphs, { keys: ['letter', 'notes'], threshold: 0.4 }), [glyphs]);
 
-  const filtered = search.trim() ? fuse.search(search).map((r) => r.item) : glyphs;
+  const filtered = useMemo(() => {
+    const items = search.trim() ? fuse.search(search).map((r) => r.item) : glyphs;
+    return [...items].sort((a, b) => {
+      const la = a.letter.length;
+      const lb = b.letter.length;
+      if (la !== lb) return lb - la;
+      return a.letter.localeCompare(b.letter);
+    });
+  }, [search, glyphs, fuse]);
 
   const handleSave = async () => {
     if (!letter.trim()) {
@@ -76,12 +94,17 @@ export default function App() {
     refresh();
   };
 
-  const handleExport = () => {
-    const blob = exportDb();
+  useEffect(() => {
+    refresh();
+    setSavedWordsHandler(setSavedWords);
+  }, []);
+
+  const handleExport = async () => {
+    const blob = await exportEverything(savedWords);
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'emuurom-runes.sqlite3';
+    a.download = 'emuurom-runes.json';
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -113,7 +136,7 @@ export default function App() {
           <button onClick={handleExport}>Export</button>
           <label className="btn-label">
             Import
-            <input type="file" accept=".sqlite3" onChange={handleImport} hidden />
+            <input type="file" accept=".sqlite3,.json" onChange={handleImport} hidden />
           </label>
         </div>
         <a
@@ -134,7 +157,10 @@ export default function App() {
               <input
                 placeholder="Character(s)"
                 value={letter}
-                onChange={(e) => { setLetter(e.target.value); setLetterError(false); }}
+                onChange={(e) => {
+                  setLetter(e.target.value);
+                  setLetterError(false);
+                }}
                 className={`input-sm${letterError ? ' error-shake' : ''}`}
                 maxLength={8}
               />

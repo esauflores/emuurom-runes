@@ -5,6 +5,14 @@ import type { GlyphRow } from './db';
 
 type Page = 'editor' | 'words';
 
+export interface SavedWord {
+  id: string;
+  label: string;
+  wordBuilder: number[];
+  flipped: string[];
+  createdAt: number;
+}
+
 interface AppState {
   pixels: string;
   letter: string;
@@ -18,6 +26,7 @@ interface AppState {
   loading: boolean;
   wordBuilder: number[];
   flipped: string[];
+  savedWords: SavedWord[];
 
   setPixels: (p: string) => void;
   setLetter: (l: string) => void;
@@ -35,6 +44,10 @@ interface AppState {
   addFlip: (key: string) => void;
   removeFlip: (key: string) => void;
   setFlipped: (f: string[]) => void;
+  setSavedWords: (w: SavedWord[]) => void;
+  saveWord: (label: string) => void;
+  deleteSavedWord: (id: string) => void;
+  loadWord: (id: string) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -52,6 +65,7 @@ export const useStore = create<AppState>()(
       loading: true,
       wordBuilder: [],
       flipped: [],
+      savedWords: [],
 
       setPixels: (pixels) => set({ pixels }),
       setLetter: (letter) => set({ letter }),
@@ -69,6 +83,30 @@ export const useStore = create<AppState>()(
       addFlip: (key) => set((s) => ({ flipped: [...s.flipped, key] })),
       removeFlip: (key) => set((s) => ({ flipped: s.flipped.filter((k) => k !== key) })),
       setFlipped: (flipped) => set({ flipped }),
+      setSavedWords: (savedWords) => set({ savedWords }),
+      saveWord: (label) =>
+        set((s) => ({
+          savedWords: [
+            ...s.savedWords,
+            {
+              id: crypto.randomUUID(),
+              label,
+              wordBuilder: s.wordBuilder,
+              flipped: s.flipped,
+              createdAt: Date.now(),
+            },
+          ],
+        })),
+      deleteSavedWord: (id) =>
+        set((s) => ({
+          savedWords: s.savedWords.filter((w) => w.id !== id),
+        })),
+      loadWord: (id) =>
+        set((s) => {
+          const w = s.savedWords.find((w) => w.id === id);
+          if (!w) return {};
+          return { wordBuilder: w.wordBuilder, flipped: w.flipped };
+        }),
     }),
     {
       name: 'emuurom-runes-ui',
@@ -83,6 +121,7 @@ export const useStore = create<AppState>()(
         currentPage: state.currentPage,
         wordBuilder: state.wordBuilder,
         flipped: state.flipped,
+        savedWords: state.savedWords,
       }),
     },
   ),
