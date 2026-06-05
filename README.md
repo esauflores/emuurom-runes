@@ -9,6 +9,8 @@ Decode symbols, compose rune-words, find translations. Companion for the languag
 
 🌐 **Live:** [emuurom-runes.vercel.app](https://emuurom-runes.vercel.app/)
 
+[![CI](https://github.com/esauflores/emuurom-runes/actions/workflows/ci.yml/badge.svg)](https://github.com/esauflores/emuurom-runes/actions/workflows/ci.yml)
+
 ## Find Runes
 
 <img src="screenshots/draw.png">
